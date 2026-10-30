@@ -1,0 +1,12 @@
+# Candidate dependencies inferred from the source; NOT yet validated in a clean environment.
+# Install a PyTorch/torchvision pair appropriate for your CUDA/CPU environment first.
+numpy
+opencv-python
+Pillow
+ultralytics
+torch
+torchvision
+torchsummary
+scipy
+scikit-learn
+matplotlib
