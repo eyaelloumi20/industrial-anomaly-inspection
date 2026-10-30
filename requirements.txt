@@ -1,5 +1,5 @@
-# Candidate dependencies inferred from the source; NOT yet validated in a clean environment.
-# Install a PyTorch/torchvision pair appropriate for your CUDA/CPU environment first.
+# Research dependencies; exact versions remain unverified without an end-to-end environment test.
+# Install mutually compatible torch/torchvision builds for your CPU/CUDA setup.
 numpy
 opencv-python
 Pillow
@@ -10,3 +10,4 @@ torchsummary
 scipy
 scikit-learn
 matplotlib
+tqdm
