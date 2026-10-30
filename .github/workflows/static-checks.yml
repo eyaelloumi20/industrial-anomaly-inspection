@@ -1,0 +1,18 @@
+name: Static source checks
+on:
+  push:
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  source-checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Compile Python sources (without model weights)
+        run: python -m compileall -q -f .
+      - name: Check repository structure and required sources
+        run: python tests/check_structure.py
