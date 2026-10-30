@@ -1,41 +1,71 @@
 # Industrial Anomaly Inspection
 
-**Video-based industrial quality inspection using YOLOv8, ByteTrack, and EfficientAD.**
+**YOLOv8 · ByteTrack · EfficientAD | Video-based industrial quality inspection**
 
-This portfolio repository is a curated presentation of the engineering project **Automatic Anomaly Detection for Industrial Quality Inspection**, developed for inspection of moving chewing-gum pieces under different backgrounds.
+A research-oriented computer vision project for inspecting moving objects in industrial video. The original application concerns chewing-gum quality inspection; this repository also serves as the starting point for a **new-dataset experimental study**.
 
-## Pipeline
+## System overview
 
 ```text
-Video frames
-   → YOLOv8: locate pieces
-   → ByteTrack: associate detections and maintain track IDs
-   → Crop and preprocess each detected piece
-   → EfficientAD: appearance anomaly score
-   → Per-track EMA and calibrated threshold
-   → Inspection annotation and evaluation
+Video / camera frames
+    ↓
+YOLOv8 — object localization
+    ↓
+ByteTrack — persistent object identities
+    ↓
+Crop extraction and preprocessing
+    ↓
+EfficientAD — visual anomaly scores
+    ↓
+Temporal EMA / calibrated decision rules
+    ↓
+Annotated video and evaluation
 ```
 
-The optimization study evaluated configurations including **LowRes192**, **LowRes224**, Thin and pruned EfficientAD variants, with an emphasis on the speed–accuracy trade-off.
+The initial project investigated Baseline, LowRes224, LowRes192, Thin and pruned model configurations, including the accuracy–throughput trade-off. The future study will validate and improve the approach on a different dataset, without assuming the original thresholds or trained weights will transfer.
 
-## Repository status
+## Start here
 
-**Curated source migration in progress.** Code is selected from the [original research repository](https://github.com/eyaelloumi20/industrial-anomaly-detection-yolo-efficientad), which remains the full experiment archive. The scripts have workstation-specific assumptions and depend on external pretrained/trained weights, data, and calibration files. **An end-to-end reproduction has not yet been verified from this clean repository.**
+- [Workspace setup](docs/SETUP.md)
+- [Architecture](docs/ARCHITECTURE.md)
+- [New dataset research plan](docs/NEW_DATASET_STUDY.md)
+- [Source and reproduction status](docs/MIGRATION.md)
 
-See [Migration and verification](docs/MIGRATION.md) before attempting to run the pipeline.
+## Repository principles
 
-## What the stages do
+1. **Preserve the original Python research scripts.** They are intentionally not refactored or rewritten at this stage.
+2. Separate local datasets, model weights and generated outputs from Git-tracked source.
+3. Track dataset versions, preprocessing, model settings, split definitions and experimental outcomes.
+4. Keep calibration and final evaluation separate to prevent information leakage.
+5. Distinguish original-PFE baselines from newly trained models and new-dataset results.
 
-- **YOLOv8** detects and localizes chewing-gum pieces; detection does not classify defects.
-- **ByteTrack** maintains piece identities across frames.
-- **EfficientAD** assigns anomaly scores to extracted crops.
-- **Temporal EMA** helps aggregate observations of the same tracked piece. Crops clipped at image boundaries must be handled consistently with the selected pipeline.
-- **Calibration and evaluation** require the appropriate held-out labels, model configuration, preprocessing, and thresholds.
+## Main source files
 
-## Reproducibility
+- `video_streaming_detector_simple_optimized_v2.py`: candidate primary inference pipeline.
+- `video_streaming_detector_fast_v2.py`: alternative high-throughput track-level inference.
+- `compare_pipeline_methods_batched.py`: shared inference/crop/model utilities.
+- `utils/`: EfficientAD model definitions and variant loaders.
+- `scripts/`: selected training, preprocessing, calibration, evaluation and benchmarking scripts.
 
-The research dataset, recorded videos, detector checkpoint, trained EfficientAD student/autoencoder, and calibrated threshold files are not shipped here. Do not assume that a standalone teacher checkpoint is sufficient for inference. See the documentation for the required assets.
+The scripts retain their original names and semantics. Existing Python code has not been established as portable or executable end-to-end in a fresh environment.
 
-## Attribution and license
+## Local quick start
 
-Source originates from the research repository linked above. The license and redistribution rights for external code and model checkpoints must be verified before a license is added to this curated repository.
+```bash
+git clone https://github.com/eyaelloumi20/industrial-anomaly-inspection.git
+cd industrial-anomaly-inspection
+python -m venv .venv
+source .venv/bin/activate
+python -m pip install -r requirements.txt
+python -m compileall -q .
+```
+
+The requirements file is a preliminary dependency list, not a locked environment. Select a compatible PyTorch and torchvision installation for your hardware. Real inference requires independently supplied YOLOv8 weights, matching EfficientAD checkpoint bundles, calibrated thresholds, and video inputs.
+
+## Data and models
+
+No private datasets, source videos, trained student/autoencoder checkpoints or calibrated threshold files are distributed here. Refer to [the original PFE research archive](https://github.com/eyaelloumi20/industrial-anomaly-detection-yolo-efficientad) for historical experimental code and methodological context.
+
+## Status
+
+**Research workspace prepared; new-dataset experiments not started.** No improved performance is claimed until results are measured on an independently evaluated dataset. License and checkpoint redistribution permissions still require review.
