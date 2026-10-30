@@ -72,7 +72,7 @@ def parse_args():
     p.add_argument('--ckpt_dir',      required=True)
     p.add_argument('--teacher_path',  required=True,
                    help='Path to best_teacher.pth (kept frozen, full-size architecture).')
-    p.add_argument('--imagenet_dir',  default="/home/ahmed/Downloads/imagenet/dtd/images")
+    p.add_argument('--imagenet_dir',  default=None)
     p.add_argument('--no_imagenet',   action='store_true')
     p.add_argument('--category',      default='chewinggum')
     p.add_argument('--model_size',    default='S', choices=['S', 'M'])
